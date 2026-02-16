@@ -124,9 +124,15 @@
           Example: if you spend about 0.15 € per km on fuel, enter 0.15.
         </p>
       </form>
+      <hr style="margin: 1rem 0; border-color: #1f2937;" />
+        <h3>Backup & restore</h3>
+        <button id="exportJson" class="btn-primary" type="button">Export data as JSON</button>
+        <input type="file" id="importJson" accept="application/json" style="margin-top: 0.6rem; width: 100%;" />
+        <p class="muted small">Choose a JSON backup file to restore your shifts and settings.</p>
     </section>
   </main>
 
   <script src="app.js"></script>
 </body>
 </html>
+
