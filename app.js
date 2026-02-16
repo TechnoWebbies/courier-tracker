@@ -257,7 +257,36 @@ if (exportBtn) {
   });
 }
 
+const importInput = document.getElementById("importJson");
+if (importInput) {
+  importInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data || !Array.isArray(data.shifts) || !data.settings) {
+          alert("Invalid backup file");
+          return;
+        }
+        saveShifts(data.shifts);
+        saveSettings(data.settings);
+        alert("Backup restored. History and stats will use the new data.");
+        initSettingsForm();
+      } catch (err) {
+        console.error(err);
+        alert("Could not read backup file");
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+
 
 // Init
 initSettingsForm();
+
 
