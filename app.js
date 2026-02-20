@@ -180,32 +180,6 @@ const historyEmpty = document.getElementById("history-empty");
 const historyTable = document.getElementById("history-table");
 const historyBody = document.getElementById("history-body");
 
-function renderHistory() {
-  const shifts = loadShifts().sort((a, b) => b.id - a.id);
-  if (!shifts.length) {
-    historyEmpty.classList.remove("hidden");
-    historyTable.classList.add("hidden");
-    return;
-  }
-
-  historyEmpty.classList.add("hidden");
-  historyTable.classList.remove("hidden");
-
-  historyBody.innerHTML = "";
-  shifts.forEach((s) => {
-    const tr = document.createElement("tr");
-    const timeStr = `${s.startTime}–${s.endTime}`;
-    tr.innerHTML = `
-      <td>${s.date}</td>
-      <td>${timeStr}</td>
-      <td>${s.orders}</td>
-      <td>${formatMoney(s.net)}</td>
-      <td>${formatMoney(s.hourly)}</td>
-    `;
-    historyBody.appendChild(tr);
-  });
-}
-
 // Edit shift
 const editModal = document.getElementById("edit-modal");
 const editForm = document.getElementById("edit-form");
@@ -291,6 +265,31 @@ editForm.addEventListener("submit", (e) => {
   renderStats();
 });
 
+function renderHistory() {
+  const shifts = loadShifts().sort((a, b) => b.id - a.id);
+  if (!shifts.length) {
+    historyEmpty.classList.remove("hidden");
+    historyTable.classList.add("hidden");
+    return;
+  }
+
+  historyEmpty.classList.add("hidden");
+  historyTable.classList.remove("hidden");
+
+  historyBody.innerHTML = "";
+  shifts.forEach((s) => {
+    const tr = document.createElement("tr");
+    const timeStr = `${s.startTime}–${s.endTime}`;
+    tr.innerHTML = `
+      <td>${s.date}</td>
+      <td>${timeStr}</td>
+      <td>${s.orders}</td>
+      <td>${formatMoney(s.net)}</td>
+      <td>${formatMoney(s.hourly)}</td>
+    `;
+    historyBody.appendChild(tr);
+  });
+}
 
 // Stats (current ISO week)
 const statsWeek = document.getElementById("stats-week");
