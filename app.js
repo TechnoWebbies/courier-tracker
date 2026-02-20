@@ -53,7 +53,9 @@ function renderHistory() {
       <td>${formatMoney(s.net)}</td>
       <td>${formatMoney(s.hourly)}</td>
     `;
-    tr.addEventListener("click", () => openEditModal(s.id));
+     tr.addEventListener("click", () => {
+      openEditModal(s.id);
+    });
     historyBody.appendChild(tr);
   });
 }
