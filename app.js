@@ -30,6 +30,35 @@ function loadShifts() {
   }
 }
 
+function renderHistory() {
+  const shifts = loadShifts().sort((a, b) => b.id - a.id);
+  if (!shifts.length) {
+    historyEmpty.classList.remove("hidden");
+    historyTable.classList.add("hidden");
+    return;
+  }
+
+  historyEmpty.classList.add("hidden");
+  historyTable.classList.remove("hidden");
+
+  historyBody.innerHTML = "";
+  shifts.forEach((s) => {
+    const tr = document.createElement("tr");
+    tr.dataset.id = s.id; // store ID on row
+    const timeStr = `${s.startTime}–${s.endTime}`;
+    tr.innerHTML = `
+      <td>${s.date}</td>
+      <td>${timeStr}</td>
+      <td>${s.orders}</td>
+      <td>${formatMoney(s.net)}</td>
+      <td>${formatMoney(s.hourly)}</td>
+    `;
+    tr.addEventListener("click", () => openEditModal(s.id));
+    historyBody.appendChild(tr);
+  });
+}
+
+
 function saveShifts(shifts) {
   localStorage.setItem(STORAGE_KEY_SHIFTS, JSON.stringify(shifts));
 }
