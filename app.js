@@ -206,6 +206,92 @@ function renderHistory() {
   });
 }
 
+// Edit shift
+const editModal = document.getElementById("edit-modal");
+const editForm = document.getElementById("edit-form");
+const editIdInput = document.getElementById("edit-id");
+const editDate = document.getElementById("edit-date");
+const editStartTime = document.getElementById("edit-startTime");
+const editEndTime = document.getElementById("edit-endTime");
+const editOrders = document.getElementById("edit-orders");
+const editEarnings = document.getElementById("edit-earnings");
+const editDistance = document.getElementById("edit-distance");
+const editParking = document.getElementById("edit-parking");
+const editCancel = document.getElementById("edit-cancel");
+
+function openEditModal(id) {
+  const shifts = loadShifts();
+  const shift = shifts.find((s) => s.id === id || s.id === Number(id));
+  if (!shift) return;
+
+  editIdInput.value = shift.id;
+  editDate.value = shift.date;
+  editStartTime.value = shift.startTime;
+  editEndTime.value = shift.endTime;
+  editOrders.value = shift.orders;
+  editEarnings.value = shift.earnings;
+  editDistance.value = shift.distance;
+  editParking.value = shift.parking;
+
+  editModal.classList.remove("hidden");
+}
+
+editCancel.addEventListener("click", () => {
+  editModal.classList.add("hidden");
+});
+
+editForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const settings = loadSettings();
+  const id = Number(editIdInput.value);
+
+  const date = editDate.value;
+  const startTime = editStartTime.value;
+  const endTime = editEndTime.value;
+  const orders = parseInt(editOrders.value || "0", 10);
+  const earnings = parseFloat(editEarnings.value || "0");
+  const distance = parseFloat(editDistance.value || "0");
+  const parking = parseFloat(editParking.value || "0");
+
+  if (!date || !startTime || !endTime) {
+    alert("Please fill date and times");
+    return;
+  }
+
+  const hours = toHours(startTime, endTime);
+  const totalCosts = distance * settings.fuelCostPerKm + parking;
+  const net = earnings - totalCosts;
+  const hourly = hours > 0 ? net / hours : 0;
+
+  const shifts = loadShifts();
+  const index = shifts.findIndex((s) => s.id === id);
+  if (index === -1) {
+    alert("Shift not found");
+    return;
+  }
+
+  shifts[index] = {
+    ...shifts[index],
+    date,
+    startTime,
+    endTime,
+    orders,
+    earnings,
+    distance,
+    parking,
+    hours,
+    totalCosts,
+    net,
+    hourly
+  };
+
+  saveShifts(shifts);
+  editModal.classList.add("hidden");
+  renderHistory();
+  renderStats();
+});
+
+
 // Stats (current ISO week)
 const statsWeek = document.getElementById("stats-week");
 const statsHours = document.getElementById("stats-hours");
